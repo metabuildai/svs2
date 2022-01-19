@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('config', help='JSON file for configuration')
     parser.add_argument('--file', '-f', help='checkpoint file to load generator model')
-    parser.add_argument('--vocoder', '-v', help='vocoder checkpoint file')
+    parser.add_argument('--hifi-gan', '-v', help='hifi-gan checkpoint file')
     parser.add_argument('--out', '-o', default='generated.wav', help='generated file')
 
     # argument parsing
