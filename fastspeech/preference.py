@@ -77,7 +77,7 @@ class Config:
 
     max_seq_len: int = 1100
 
-    # vocoder
+    # hifi-gan
     upsample_rate = [8, 8, 2, 2]
     upsample_kernel_size = [16, 16, 4, 4]
     upsample_initial_channel: int = 512

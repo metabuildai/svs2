@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/hifi-gan" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vocoder" vcs="Git" />
   </component>
 </project>
