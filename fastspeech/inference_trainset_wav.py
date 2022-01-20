@@ -75,11 +75,13 @@ def alignment(notes, sr, hope_size):
     # time format transform (string to float)
     # time format transform (string to float)
     for note in notes:
-        note['startTime'] = float(note['startTime'])
-        note['endTime'] = float(note['endTime'])
+        note['startTime'] = float(note['start_time'])
+        note['endTime'] = float(note['end_time'])
 
-        if len(note['Lyric']) == 0:
+        if len(note['lyric']) == 0:
             note['Lyric'] = 'sil'
+        else:
+            note['Lyric'] = note['lyric']
 
     # remove minimal hop
     new_notes = list()
@@ -199,7 +201,7 @@ def alignment(notes, sr, hope_size):
                 n['startHop'] = pre_end
                 n['endHop'] = start
                 n['Lyric'] = 'sp'
-                n['midiNum'] = 1
+                n['midi_num'] = 1
                 new_notes.append(n)
         pre_note = note
         new_notes.append(copy.deepcopy(note))
@@ -249,7 +251,7 @@ def alignment(notes, sr, hope_size):
         pitch = list()
         for note in sentence:
             text.append(note['Lyric'])
-            pitch.append(note['midiNum'])
+            pitch.append(note['midi_num'])
             duration.append(1)
         alignment_list.append({'text': text, 'duration': duration, 'pitch': pitch, 'start': start, 'end': end})
 
@@ -265,7 +267,7 @@ def inference(files, model, vocoder, mel_spectogram, output_dir, config, desc):
         txt_grid = os.path.join(txt_grid_dir, '{}.json'.format(basename))
         with open(txt_grid, 'r', encoding='UTF-8') as f:
             obj = json.load(f)
-        notes = obj['Notes']
+        notes = obj['notes']
 
         align = alignment(notes, config.sampling_rate, config.hop_length)
 
@@ -311,7 +313,7 @@ def inference(files, model, vocoder, mel_spectogram, output_dir, config, desc):
             mel = mel_scaler.inverse_transform(mel_postnet.squeeze().cpu().detach())
             mel_trans = torch.from_numpy(mel).transpose(0, 1).to(device)
 
-            wave = vocoder(mel_trans.unsqueeze(0).cpu())
+            wave = vocoder(mel_trans.unsqueeze(0).float().cpu())
             wave = wave * MAX_WAV_VALUE
             wave = wave.cpu().detach().numpy().astype('int16')
 
@@ -363,14 +365,10 @@ if __name__ == "__main__":
 
     os.makedirs(output_dir, exist_ok=True)
     if remove is True:
-        if os.path.isdir(os.path.join(output_dir, 'train')) is True:
-            shutil.rmtree(os.path.join(output_dir, 'train'))
-        if os.path.isdir(os.path.join(output_dir, 'valid')) is True:
-            shutil.rmtree(os.path.join(output_dir, 'valid'))
-    os.makedirs(os.path.join(output_dir, 'train'), exist_ok=True)
-    os.makedirs(os.path.join(output_dir, 'valid'), exist_ok=True)
-    print('train directory : ', os.path.join(output_dir, 'traioin'))
-    print('valid directory : ', os.path.join(output_dir, 'valid'))
+        if os.path.isdir(output_dir) is True:
+            shutil.rmtree(output_dir, 'train')
+    os.makedirs(output_dir, exist_ok=True)
+    print('inference directory : ', output_dir, 'traioin')
 
     if sampling_num is not None:
         if sampling_num < len(config.wave_file):

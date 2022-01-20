@@ -12,8 +12,6 @@ from text.korean import text_to_sequence
 from scaler import build_scaler, save_scaler
 from librosa import filters
 import copy
-from jamo import h2j, j2hcj
-from g2pk import G2p
 import json
 import numpy as np
 import random
@@ -39,11 +37,13 @@ def parse_filepath(path: str):
 def alignment(notes, sr, hope_size, segment):
     # time format transform (string to float)
     for note in notes:
-        note['startTime'] = float(note['startTime'])
-        note['endTime'] = float(note['endTime'])
+        note['startTime'] = float(note['start_time'])
+        note['endTime'] = float(note['end_time'])
 
-        if len(note['Lyric']) == 0:
+        if len(note['lyric']) == 0:
             note['Lyric'] = 'sil'
+        else:
+            note['Lyric'] = note['lyric']
 
     # remove minimal hop
     new_notes = list()
@@ -163,7 +163,7 @@ def alignment(notes, sr, hope_size, segment):
                 n['startHop'] = pre_end
                 n['endHop'] = start
                 n['Lyric'] = 'sp'
-                n['midiNum'] = 1
+                n['midi_num'] = 1
                 new_notes.append(n)
         pre_note = note
         new_notes.append(copy.deepcopy(note))
@@ -230,7 +230,7 @@ def alignment(notes, sr, hope_size, segment):
         pitch = list()
         for note in sentence:
             text.append(note['Lyric'])
-            pitch.append(note['midiNum'])
+            pitch.append(note['midi_num'])
             duration.append(1)
         alignment_list.append({'text': text, 'duration': duration, 'pitch': pitch, 'start': start, 'end': end})
 
@@ -264,7 +264,7 @@ def process(wave_file, textgrid_file, mel_scaler, f0_scaler, energy_scaler, conf
 
         with open(textgrid_file[i], 'r', encoding='UTF-8') as f:
             obj = json.load(f)
-        notes = obj['Notes']
+        notes = obj['notes']
         align_list = alignment(notes, config.sampling_rate, config.hop_length, None)
 
         audio, sampling_rate = librosa.load(wave_file[i], sr=config.sampling_rate)
