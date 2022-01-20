@@ -335,7 +335,7 @@ if __name__ == "__main__":
     parser.add_argument('config', help='JSON file for configuration')
     parser.add_argument('--dir', '-d', default='generated_file', help='directory for saving generated file')
     parser.add_argument('--file', '-f', help='checkpoint file to load generator model')
-    parser.add_argument('--hifi-gan', '-v', help='hifi-gan checkpoint file')
+    parser.add_argument('--vocoder', '-v', help='hifi-gan checkpoint file')
     parser.add_argument('--sample', '-s', type=int, help='sampling number for inference train/valid data')
     parser.add_argument('--remove', '-r', action='store_true', help='remove previous generated file')
 
