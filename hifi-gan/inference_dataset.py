@@ -83,30 +83,20 @@ if __name__ == "__main__":
 
     os.makedirs(output_dir, exist_ok=True)
     if remove is True:
-        if os.path.isdir(os.path.join(output_dir, 'train')) is True:
-            shutil.rmtree(os.path.join(output_dir, 'train'))
-        if os.path.isdir(os.path.join(output_dir, 'valid')) is True:
-            shutil.rmtree(os.path.join(output_dir, 'valid'))
-    os.makedirs(os.path.join(output_dir, 'train'), exist_ok=True)
-    os.makedirs(os.path.join(output_dir, 'valid'), exist_ok=True)
-    print('train directory : ', os.path.join(output_dir, 'train'))
-    print('valid directory : ', os.path.join(output_dir, 'valid'))
+        if os.path.isdir(output_dir) is True:
+            shutil.rmtree(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
+    print('inference directory : ', output_dir, 'train')
 
     if sampling_num is not None:
-        train_file = config.train_wave_file.copy()
-        if len(train_file) > sampling_num:
-            random.shuffle(train_file)
-            train_file = train_file[:sampling_num]
+        wave_file = config.wave_file.copy()
+        if len(wave_file) > sampling_num:
+            random.shuffle(wave_file)
+            wave_file = wave_file[:sampling_num]
 
-        valid_file = config.valid_wave_file.copy()
-        if len(valid_file) > sampling_num:
-            random.shuffle(valid_file)
-            valid_file = valid_file[:sampling_num]
     else:
-        train_file = config.train_wave_file
-        valid_file = config.valid_wave_file
-    print('inference train file: ', len(train_file))
-    print('inference valid file: ', len(valid_file))
+        wave_file = config.wave_file
+    print('inference file: ', len(wave_file))
 
     print('{s:{c}^{n}}\n'.format(s='complete: setup step', n=50, c='-'))
 
@@ -118,5 +108,4 @@ if __name__ == "__main__":
     mel_spectrogram = mel_spectrogram.to(device)
 
     # generator.eval()
-    inference(generator, mel_spectrogram, train_file, config, os.path.join(output_dir, 'train'), 'inference train dataset')
-    inference(generator, mel_spectrogram, valid_file, config, os.path.join(output_dir, 'valid'), 'inference valid dataset')
+    inference(generator, mel_spectrogram, wave_file, config, output_dir, 'inference dataset')

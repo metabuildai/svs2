@@ -33,7 +33,7 @@ def process(wave_file, desc, cf:Config, out_file, logger):
 
         with open(mid_path, 'r', encoding='UTF-8') as f:
             obj = json.load(f)
-        notes = obj['Notes']
+        notes = obj['notes']
 
         segment_duration = cf.audio_segment_size / float(cf.sampling_rate)
 
@@ -43,18 +43,18 @@ def process(wave_file, desc, cf:Config, out_file, logger):
         segment_start = 0
         segment_end = 0
         for note in notes:
-            if len(note['Lyric']) == 0:
+            if len(note['lyric']) == 0:
                 continue
 
             if segment_start == 0 and segment_end == 0:
-                start = float(note['startTime'])
-                end = float(note['endTime'])
+                start = float(note['start_time'])
+                end = float(note['end_time'])
 
                 segment_start = start
                 segment_end = end
             else:
-                start = float(note['startTime'])
-                end = float(note['endTime'])
+                start = float(note['start_time'])
+                end = float(note['end_time'])
 
                 if segment_end + segment_duration > start:
                     segment_end = end
